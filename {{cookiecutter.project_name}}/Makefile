@@ -5,7 +5,7 @@ PYTHON := python
 .SUFFIXES:
 
 .PHONY: all
-all: build check-codestyle mypy test
+all: build check-codestyle mypy test docs
 
 .PHONY: build
 build: .git/hooks/pre-commit poetry.lock
@@ -65,3 +65,7 @@ lint: test check-codestyle mypy check-safety
 .PHONY: update-dev-deps
 update-dev-deps: poetry.lock
 	poetry update --only dev
+
+.PHONY: docs
+docs:
+	poetry run sphinx-build docs/ docs/_build
