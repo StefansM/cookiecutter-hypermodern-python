@@ -23,6 +23,7 @@ poetry.lock: pyproject.toml
 
 .git:
 	git init
+	git remote add origin git@github.com:{{ cookiecutter.github_user }}/{{ cookiecutter.project_name }}.git
 
 .git/hooks/pre-commit: .git poetry.lock .pre-commit-config.yaml .pre-commit-hook
 	poetry run pre-commit install -f
