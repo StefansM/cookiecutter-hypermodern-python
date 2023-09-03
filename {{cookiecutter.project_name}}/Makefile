@@ -10,12 +10,19 @@ all: build check-codestyle mypy test docs
 .PHONY: build
 build: .git/hooks/pre-commit poetry.lock
 
-#* Poetry
 .PHONY: poetry-download
 poetry-download:
 	pipx install poetry
+	poetry self add poetry-plugin-up
 
-poetry.lock: pyproject.toml
+
+# Ensures that we run a build on first checkout, when everything has the same
+# timestamp.
+.first-build:
+	touch .first-build
+
+
+poetry.lock: pyproject.toml .first-build
 	poetry lock -n --no-update
 	poetry install -n
 	-poetry run mypy --install-types --non-interactive ./src ./tests
@@ -38,14 +45,12 @@ update:
 .PHONY: pre-commit-install
 pre-commit-install: .git/hooks/pre-commit
 
-#* Formatters
 .PHONY: format
 format: poetry.lock
-	poetry run pyupgrade --exit-zero-even-if-changed --py{{ cookiecutter.python_version.replace('.', '') }}-plus src/**/*.py tests/**/*.py
+	find src/ tests/ -name '*.py' | xargs poetry run pyupgrade --exit-zero-even-if-changed --py{{ cookiecutter.python_version.replace('.', '') }}-plus
 	poetry run isort --settings-path pyproject.toml ./src ./tests
 	poetry run black --config pyproject.toml ./src ./tests
 
-#* Linting
 .PHONY: test
 test: poetry.lock
 	poetry run pytest -c pyproject.toml --xdoctest ./tests ./src
@@ -60,12 +65,13 @@ check-codestyle: poetry.lock
 mypy: poetry.lock
 	poetry run mypy --config-file pyproject.toml ./src ./tests
 
-.PHONY: lint
-lint: test check-codestyle mypy check-safety
+.PHONY: pre-commit
+pre-commit: .git/hooks/pre-commit
+	poetry run pre-commit run --all-files
 
-.PHONY: update-dev-deps
-update-dev-deps: poetry.lock
-	poetry update --only dev
+
+.PHONY: lint pre-commit
+lint: test check-codestyle mypy
 
 .PHONY: docs
 docs: poetry.lock
