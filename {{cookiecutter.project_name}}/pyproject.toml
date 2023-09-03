@@ -24,7 +24,7 @@ Changelog = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.proj
 python = "^{{ cookiecutter.python_version }}"
 click = ">=8.0.1"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 Pygments = ">=2.10.0"
 black = ">=21.10b0"
 flake8 = ">=4.0.1"

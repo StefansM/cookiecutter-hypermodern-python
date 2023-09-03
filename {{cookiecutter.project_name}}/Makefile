@@ -24,7 +24,7 @@ poetry-download:
 
 poetry.lock: pyproject.toml .first-build
 	poetry lock -n --no-update
-	poetry install -n
+	poetry install -n --with=dev,docs
 	-poetry run mypy --install-types --non-interactive ./src ./tests
 	touch poetry.lock
 
@@ -70,8 +70,9 @@ pre-commit: .git/hooks/pre-commit
 	poetry run pre-commit run --all-files
 
 
-.PHONY: lint pre-commit
+.PHONY: lint
 lint: test check-codestyle mypy
+
 
 .PHONY: docs
 docs: poetry.lock
