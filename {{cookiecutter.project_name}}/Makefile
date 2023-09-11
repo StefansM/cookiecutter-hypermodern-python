@@ -24,7 +24,7 @@ poetry-download:
 
 poetry.lock: pyproject.toml .first-build
 	poetry lock -n --no-update
-	poetry install -n --with=dev
+	poetry install -n --with=dev,docs
 	-poetry run mypy --install-types --non-interactive ./src ./tests
 	touch poetry.lock
 
