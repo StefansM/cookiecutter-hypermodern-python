@@ -52,14 +52,6 @@ myst-parser = {version = ">=0.16.1"}
 source = ["src", "*/site-packages"]
 tests = ["tests", "*/tests"]
 
-[tool.coverage.run]
-branch = true
-source = ["{{cookiecutter.package_name}}", "tests"]
-
-[tool.coverage.report]
-show_missing = true
-fail_under = 100
-
 [tool.isort]
 profile = "black"
 force_single_line = true

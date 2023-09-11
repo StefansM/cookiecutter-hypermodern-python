@@ -16,6 +16,6 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    versioning-strategy: lockfile-only
+    versioning-strategy: widen
     allow:
       - dependency-type: "all"
