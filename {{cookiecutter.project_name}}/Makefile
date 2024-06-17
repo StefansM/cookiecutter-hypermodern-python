@@ -47,9 +47,9 @@ pre-commit-install: .git/hooks/pre-commit
 
 .PHONY: format
 format: poetry.lock
-	find src/ tests/ -name '*.py' | xargs poetry run pyupgrade --exit-zero-even-if-changed --py{{ cookiecutter.python_version.replace('.', '') }}-plus
-	poetry run isort --settings-path pyproject.toml ./src ./tests
-	poetry run black --config pyproject.toml ./src ./tests
+	poetry run ruff format ./src ./tests
+	poetry run ruff check --fix ./src ./tests
+
 
 .PHONY: test
 test: poetry.lock
@@ -57,13 +57,12 @@ test: poetry.lock
 
 .PHONY: check-codestyle
 check-codestyle: poetry.lock
-	poetry run isort --diff --check-only --settings-path pyproject.toml ./src ./tests
-	poetry run black --diff --check --config pyproject.toml ./src ./tests
-	poetry run flake8 ./src ./tests
+	poetry run ruff format --check ./src ./tests
+	poetry run ruff check ./src ./tests
 
 .PHONY: mypy
 mypy: poetry.lock
-	poetry run mypy --config-file pyproject.toml ./src ./tests
+	poetry run mypy --strict --config-file pyproject.toml ./src ./tests
 
 .PHONY: pre-commit
 pre-commit: .git/hooks/pre-commit
